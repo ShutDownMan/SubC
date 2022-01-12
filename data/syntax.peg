@@ -1,0 +1,13 @@
+
+
+digito -> 0 - 9
+numero -> digito+
+inteiro -> "-"? numero
+
+float -> inteiro "."  numero
+
+letra -> "a"-"z" | "A"-"Z"
+
+identificador -> (letra | "_") (letra | numero | "_")*
+
+string_literal -> "\"" .* "\""
