@@ -3,10 +3,9 @@
 digito -> 0 - 9
 
 numero -> digito+
+inteiro_literal -> "-"? numero
 
-inteiro -> "-"? numero
-
-float -> inteiro "."  numero
+float_literal -> inteiro_literal "."  numero
 
 letra -> "a"-"z" | "A"-"Z"
 
@@ -16,4 +15,6 @@ string_literal -> "\"" .* "\""
 
 tipo_var -> "float" | "char" | "int"
 
-variavel_literal -> flaot_literal | string_literal | inteiro_literal
+variavel -> tipo_var identificador ("=" valor_literal)? 
+
+valor_literal -> string_literal | float_literal | inteiro_literal
