@@ -1,6 +1,7 @@
 
 
 digito -> 0 - 9
+
 numero -> digito+
 inteiro_literal -> "-"? numero
 
@@ -17,4 +18,3 @@ tipo_var -> "float" | "char" | "int"
 variavel -> tipo_var identificador ("=" valor_literal)? 
 
 valor_literal -> string_literal | float_literal | inteiro_literal
-
