@@ -1,6 +1,6 @@
 
 
-digito -> 0 - 9
+digito -> "0" - "9"
 numero -> digito+
 inteiro_literal -> "-"? numero
 
@@ -14,7 +14,16 @@ string_literal -> "\"" .* "\""
 
 tipo_var -> "float" | "char" | "int"
 
-variavel -> tipo_var identificador ("=" valor_literal)? 
+variavel -> tipo_var __ identificador __ ("=" __ valor_literal)? 
 
 valor_literal -> string_literal | float_literal | inteiro_literal
 
+if_stat -> "if" __ "(" __ statement __ ")" __ code_body
+
+statement -> attribution | arithmetic
+
+code_body -> __ ( attribution | arithmetic ) __ ";"
+
+attribution -> variavel __ "=" __ statement
+
+arithmetic -> 
