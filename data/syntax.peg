@@ -1,20 +1,42 @@
 
-
-digito -> 0 - 9
-
+digito -> "0" - "9"
 numero -> digito+
 inteiro_literal -> "-"? numero
+__ -> "\s"*
 
 float_literal -> inteiro_literal "."  numero
 
 letra -> "a"-"z" | "A"-"Z"
+string_literal -> "\"" .* "\""
+
+valor_literal -> string_literal | float_literal | inteiro_literal
 
 identificador -> (letra | "_") (letra | numero | "_")*
 
-string_literal -> "\"" .* "\""
-
 tipo_var -> "float" | "char" | "int"
 
-variavel -> tipo_var identificador ("=" valor_literal)? 
+variavel -> tipo_var __ identificador __ ("=" __ valor_literal)? ";"
 
-valor_literal -> string_literal | float_literal | inteiro_literal
+if_stat -> "if" __ "(" __ statement __ ")" __ code_body __ ("else" __ code_body)?
+
+statement -> (attribution | arithmetic | logical_arithmetic | comparision_arithmetic | function_call)
+
+code_body -> "{" __ (("return" __)? statement __ ";" | if_stat)* __ "}"
+
+attribution -> variavel __ "=" __ statement
+
+arithmetic -> arithmetic __ "+" __ arithmetic_term | arithmetic __ "-" __ arithmetic_term | arithmetic_term
+arithmetic_term -> arithmetic_term __ "*" __ arithmetic_factor | arithmetic_term __ "/" __ arithmetic_factor | arithmetic_factor
+arithmetic_factor -> (valor_literal | identificador) | arithmetic | "-" arithmetic_factor
+
+logical_arithmetic -> logical_arithmetic __ "&&" __ statement | logical_arithmetic __ "||" __ statement | statement
+
+comparision_arithmetic -> statement __ comparision_operator __ statement | statement
+
+comparision_operator -> "==" | "!=" | ">=" | "<=" | "<" | ">"
+
+function_declaration -> tipo_func __ identificador __ "(" __ function_params __ ")" __ code_body
+function_params -> tipo_var __ identificador __ ("," __ function_params)*
+
+function_call -> identificador "(" __ function_args __ ")"
+function_args -> (identificador | valor_literal) __ ("," function_args)*
