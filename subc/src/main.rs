@@ -25,7 +25,7 @@ fn main() {
     println!("{:?}", args);
 
     // lendo o arquivo fonte a partir do caminho fornecido nos argumentos de command line
-    let file_path = PathBuf::from(&args.get(1).expect("arqivo de entrada não foi especificado"));
+    let file_path = PathBuf::from(&args.get(1).expect("arquivo de entrada não foi especificado"));
     let sample_program = fs::read_to_string(file_path).unwrap();
 
     // testa se os (), [] e {} estão no mínimo balanceados
