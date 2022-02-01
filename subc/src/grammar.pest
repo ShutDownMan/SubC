@@ -1,0 +1,70 @@
+// SubC Grammar
+
+// Lexical Tokens
+
+// As seguintes regras são utilizadas para a reconhecer tokens
+// mais simples sendo dígitos de 0 a 9,
+// conjunto de um ou mais dígitos representando números,
+// identificador de sinal para denominar um inteiro negativo,
+// espaço entre regras.
+digit = _{ '0'..'9' }
+number = @{ digit+ }
+whitespace = _{ " " | "\t" | "\n" }
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+
+// Regra para reconhecer token de número com casas decimais.
+float_literal = @{ whitespace ~ number ~ "." ~ number ~ whitespace }
+
+// token de comentários inline
+comment = @{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
+// token de identificador de variáveis/funções/structs
+identifier = @{ whitespace ~ (alpha | "_") ~ (alpha | digit | "_")* ~ whitespace }
+
+// Regras para reconhecer tokens de caracteres de ‘a’ até ‘z’ minúsculo e maiúsculo,
+// sequência de zero ou mais caracteres.
+string_literal = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+
+// Regras para reconhecer tokens dos tipos de variáveis aceitas por variáveis e funções
+type_primitive = @{ "void" | "float" | "char" | "int" }
+
+// token de termino de linha
+end_line = _{ ";" }
+
+// tokens de escopo
+open_braces = _{ "{" }
+close_braces = _{ "}" }
+// tokens de expressão
+open_parens = _{ "(" }
+close_parens = _{ ")" }
+
+// tokens dos operadores de comparação
+comparision_operator = _{ "==" | "!=" | ">=" | "<=" | "<" | ">" }
+
+// tokens de aritmética com precedência
+arithmetic_operator = _{ "+" | "-" }
+arithmetic_factor_operator = _{ "*" | "/" }
+
+// tokens de operadores lógicos booleanos
+logical_operator = _{ "&&" | "||" }
+
+// tokens do conjunto de operadores de atribuição
+attribution_operator = _{ ("+" | "-" | "/" | "*" | ">>" | "<<" | "|" | "^" | "&")? ~ "=" }
+
+// tokens de palavras reservadas
+if_keyword = @{ "if" }
+else_keyword = @{ "else" }
+return_keyword = @{ "return" }
+main_keyword = @{ "main" }
+
+// token auxiliar para verificação léxica do arquivo fonte
+lexical_token = _{ main_keyword | comment | identifier | string_literal | type_primitive |
+    end_line | open_braces | close_braces | open_parens | close_parens |
+    comparision_operator | arithmetic_operator | arithmetic_factor_operator | logical_operator |
+    attribution_operator | if_keyword | else_keyword | return_keyword | float_literal | whitespace | number }
+
+lexer = _{
+    SOI
+    ~ lexical_token*
+    ~ EOI
+}

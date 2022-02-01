@@ -1,0 +1,63 @@
+use json::object;
+use json::JsonValue;
+
+peg::parser! {
+    /// search query grammar to ast parser
+    pub grammar subc() for str {
+
+        pub rule program() -> JsonValue
+            = ___() p:(variable_declaration())+ ___()
+            { object!{ "AST": p } };
+
+        // rule function_declaration() -> JsonValue
+        //     = tipo_function() ___() indentifier() ___()
+        //     "(" ___() function_params() ___() ")" ___()
+        //     code_body()
+        //     {};
+        rule variable_declaration() -> JsonValue
+            = t:tipo_variable() ___() id:indentifier() ___() v:attribution_expr()? ";"
+            {
+                object!{
+                    "type": t,
+                    "indentifier": id,
+                    "value": v
+                }
+            };
+        rule attribution_expr() -> JsonValue
+            = "=" ___() v:value_literal() { v };
+
+        rule tipo_function() -> String
+            = v:$("float" / "char" / "int") { v.to_string() };
+        rule tipo_variable() -> String
+            = v:$("float" / "char" / "int") { v.to_string() };
+
+        rule indentifier() -> JsonValue
+            = v:$((char_regular() / "_") (char_regular() / number() / "_")*)
+            {
+                object!{ "identifier": v }
+            };
+
+        rule value_literal() -> JsonValue
+            = v:(string_literal() / float_literal() / integer_literal())
+            {
+                object!{ "literal": v }
+            };
+
+        /// TODO: add number parsing to grammar
+        rule string_literal() -> JsonValue
+            = r#"""# v:$([^ '"']*) r#"""# { object!{ "string": v.to_string() } };
+        rule integer_literal() -> JsonValue
+            = v:$("-"? number()) { object!{ "integer": v.parse().or(Err("i32")) } };
+        rule float_literal() -> JsonValue
+            = v:$(integer_literal() "."  number()) { object!{ "float": v.parse().or(Err("f32")) } };
+
+        rule digit() -> char = v:['0'..='9'] { v };
+        rule number() -> u32 = v:$(digit()+) {? v.parse().or(Err("u32")) };
+        rule char_regular() -> char
+            = v:$(quiet!{[_]} / expected!("regular character")) {?
+                let c = v.chars().nth(0).unwrap();
+                if c.is_alphabetic() { Ok(c) } else { Err("") }
+            };
+        rule ___() = quiet!{[' ' | '\n' | '\t']+} / expected!("{MWS}");
+    }
+}

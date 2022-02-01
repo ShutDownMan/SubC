@@ -1,4 +1,5 @@
 void main ()) {
-    int 1x = 10
+    int 1x = 25.5 + 0x; #
 
+    return abc"
 }
