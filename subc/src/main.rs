@@ -39,7 +39,7 @@ fn main() {
     // uma regra especial chamada lexer foi criada no intuito de formar uma corrente
     // de tokens válidos desconsiderando regras sintáticas (que serão posteriormente implementadas)
     let pairs = SubCParser::parse(Rule::lexer, &sample_program)
-        .unwrap_or_else(|e| panic!("Erro na análise léxica:\n{}", e));
+        .unwrap_or_else(|e| panic!("Erro na análise léxica, token inválido:\n{}", e));
 
     // passa por todos os pares de regra/valor dos tokens reconhecidos
     for pair in pairs {
@@ -48,7 +48,6 @@ fn main() {
         println!("Span:    {:?}", pair.as_span());
         println!("Texto:    {}", pair.as_str());
     }
-
 
     println!("Arquivo de entrada está lexicamente correto!");
 }

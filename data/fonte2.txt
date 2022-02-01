@@ -1,5 +1,5 @@
 void main ()) {
-    int 1x = 25.5 + 0x; \
+    int 1x = 25.5 + 0x; #
 
-    abc"
+    return abc"
 }
