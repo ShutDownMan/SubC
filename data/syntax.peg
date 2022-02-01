@@ -1,42 +1,63 @@
 
-digito -> "0" - "9"
-numero -> digito+
-inteiro_literal -> "-"? numero
-__ -> "\s"*
+# Lexical Tokens
 
-float_literal -> inteiro_literal "."  numero
+digit -> ["0"-"9"]
+number -> digit+
+__ -> "\s"+
 
-letra -> "a"-"z" | "A"-"Z"
+float_literal -> number "."  number
+
+letter -> "a"-"z" | "A"-"Z"
 string_literal -> "\"" .* "\""
+
+identificador -> (letter | "_") (letter | number | "_")*
+
+tipo_variable -> "float" | "char" | "int"
+tipo_function -> "void" | "float" | "char" | "int"
+
+end_line -> ";"
+open_braces -> "{"
+close_braces -> "{"
+open_parens -> "\("
+close_parens -> "\)"
+
+comparision_operator -> "==" | "!=" | ">=" | "<=" | "<" | ">"
+
+arithmetic_operator -> "+" | "-"
+arithmetic_factor_operator -> "*" | "/"
+
+attribution_operator -> ("+" | "-" | "/" | "*" | ">>" | "<<" | "|" | "^" | "&")? "="
+
+if_keyword -> "if"
+else_keyword -> "else"
+return_keyword -> "return"
+
+# Syntatical Tokens
 
 valor_literal -> string_literal | float_literal | inteiro_literal
 
-identificador -> (letra | "_") (letra | numero | "_")*
+variable_declaration -> tipo_variable __ identificador __ ("=" __ valor_literal)? end_line
 
-tipo_var -> "float" | "char" | "int"
-
-variavel -> tipo_var __ identificador __ ("=" __ valor_literal)? ";"
-
-if_stat -> "if" __ "(" __ statement __ ")" __ code_body __ ("else" __ code_body)?
+if_stat -> if_keyword __ "(" __ statement __ ")" __ code_body __ (else_keyword __ code_body)?
 
 statement -> (attribution | arithmetic | logical_arithmetic | comparision_arithmetic | function_call)
 
-code_body -> "{" __ (("return" __)? statement __ ";" | if_stat)* __ "}"
+code_body -> open_braces __ ((return_keyword __)? statement __ end_line | if_stat)* __ close_braces
 
-attribution -> variavel __ "=" __ statement
+attribution -> variable_declaration __ "=" __ statement
 
-arithmetic -> arithmetic __ "+" __ arithmetic_term | arithmetic __ "-" __ arithmetic_term | arithmetic_term
-arithmetic_term -> arithmetic_term __ "*" __ arithmetic_factor | arithmetic_term __ "/" __ arithmetic_factor | arithmetic_factor
+arithmetic -> arithmetic __ arithmetic_operator __ arithmetic_term | arithmetic_term
+arithmetic_term -> arithmetic_term __ arithmetic_factor_operator __ arithmetic_factor | arithmetic_factor
 arithmetic_factor -> (valor_literal | identificador) | arithmetic | "-" arithmetic_factor
 
 logical_arithmetic -> logical_arithmetic __ "&&" __ statement | logical_arithmetic __ "||" __ statement | statement
 
 comparision_arithmetic -> statement __ comparision_operator __ statement | statement
 
-comparision_operator -> "==" | "!=" | ">=" | "<=" | "<" | ">"
-
-function_declaration -> tipo_func __ identificador __ "(" __ function_params __ ")" __ code_body
-function_params -> tipo_var __ identificador __ ("," __ function_params)*
+function_declaration -> tipo_function __ identificador __ "(" __ function_params __ ")" __ code_body
+function_params -> tipo_variable __ identificador __ ("," __ function_params)*
 
 function_call -> identificador "(" __ function_args __ ")"
 function_args -> (identificador | valor_literal) __ ("," function_args)*
+
+program -> (function_declaration | variable_declaration)

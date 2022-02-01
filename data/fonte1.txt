@@ -4,7 +4,7 @@ int main () {
     int a = get_int_valor();
 
     if(a || x1) {
-
+        1 && 0;
     } else {
         if(1) {
             return 0;

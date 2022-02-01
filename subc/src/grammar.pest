@@ -1,0 +1,50 @@
+// SubC Grammar
+
+// Lexical Tokens
+
+digit = _{ '0'..'9' }
+number = @{ digit+ }
+whitespace = _{ " " | "\t" | "\n" }
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+
+float_literal = @{ number ~ "." ~ number }
+
+comment = @{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+identifier = @{ (alpha | "_") ~ (alpha | digit | "_")* }
+
+string_literal = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+
+type_primitive = @{ "void" | "float" | "char" | "int" }
+
+end_line = _{ ";" }
+
+open_braces = _{ "{" }
+close_braces = _{ "}" }
+open_parens = _{ "(" }
+close_parens = _{ ")" }
+
+comparision_operator = _{ "==" | "!=" | ">=" | "<=" | "<" | ">" }
+
+arithmetic_operator = _{ "+" | "-" }
+arithmetic_factor_operator = _{ "*" | "/" }
+
+logical_operator = _{ "&&" | "||" }
+
+attribution_operator = _{ ("+" | "-" | "/" | "*" | ">>" | "<<" | "|" | "^" | "&")? ~ "=" }
+
+if_keyword = @{ "if" }
+else_keyword = @{ "else" }
+return_keyword = @{ "return" }
+main_keyword = @{ "main" }
+
+
+lexical_token = _{ main_keyword | comment | identifier | string_literal | type_primitive |
+    end_line | open_braces | close_braces | open_parens | close_parens |
+    comparision_operator | arithmetic_operator | arithmetic_factor_operator | logical_operator |
+    attribution_operator | if_keyword | else_keyword | return_keyword | float_literal | whitespace | number }
+
+lexer = _{
+    SOI
+    ~ lexical_token*
+    ~ EOI
+}
